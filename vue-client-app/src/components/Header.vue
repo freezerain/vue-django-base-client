@@ -2,68 +2,50 @@
   <header>
     <div class="cat_logo">
       <img src="..//assets/cat_logo.svg" alt=""/>
-      <span>My title</span>
+      <h3 class="title_text">Cats event manager</h3>
     </div>
-    <div class="auth_block" :class="{authorize: isAuth}">
-      <span class="username" v-if="isAuth">Username</span>
-      <button type="button" class="btn login" v-if="!isAuth" @click='login'>Login</button>
-      <button type="button" class="btn logout" v-if="isAuth" @click="logout">Logout</button>
-    </div>
+    <AuthComponent/>
   </header>
 </template>
 
 <script>
+import AuthComponent from "./AuthComponent.vue";
+
 export default {
   name: "Header",
-  data(){
-    return{
-      isAuth : true,
-
-    }
+  components: {
+    AuthComponent,
   },
-  methods: {
-    login() {
-      this.isAuth = !this.isAuth
-    },
-    logout() {
-      this.isAuth = !this.isAuth
-
-    }
-  }
-
 }
 </script>
 
-
 <style scoped>
-header{
-  display:flex;
-  align-items:center;
-  width:100%;
-  background: rgba(255, 0, 0, 0.84);
+header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: rgb(183, 28, 28);
+  border-radius: 0 0 10px 10px;
+  padding: 5px;
+}
+.title_text {
+  text-shadow: 1px 1px #000000;
+  color: #ffffff
 }
 .cat_logo {
-  display:flex;
-  align-items:center;
-  margin-right:auto;
-}
-.cat_logo img{
-  max-width:50px;
-}
-.auth_block{
-  margin-left:auto;
+  display: flex;
+  margin-right: auto;
+  filter: contrast(200%) drop-shadow(1px 1px #000000);
+  align-items: center;
 
 }
-.authorize{
- /* TODO mutate after*/
-}
-.btn{
-  margin:0 10px
-}
-.login{
 
+.cat_logo img {
+  height:50px;
+  object-fit: fill;
 }
-.logout{
 
+AuthComponent {
+  margin-left: auto;
 }
 </style>
