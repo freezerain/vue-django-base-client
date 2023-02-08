@@ -1,29 +1,31 @@
-# vue-client-app
+# Vue.js client for django rest api
 
-This template should help get you started developing with Vue 3 in Vite.
+Very simple vue app to consume events from internal django api
 
-## Recommended IDE Setup
+## Description
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+This project template is designed to be used with [Django rest api server](https://github.com/freezerain/vue-django-client).
 
-## Customize configuration
+## Getting Started
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+### Dependencies
 
-## Project Setup
+Vue.js, axios, vite and good attitude. More in package-lock.json
 
-```sh
-npm install
-```
+### Installing
 
-### Compile and Hot-Reload for Development
+* ```$ npm install```
+* ```$ cd vue-client-app```
+* ```$ npm run dev```
 
-```sh
-npm run dev
-```
+### Running
 
-### Compile and Minify for Production
+Server should be up on http://localhost:5173/
 
-```sh
-npm run build
-```
+Be aware you are entering error-handling-free zone. Some errors will be printed in console tho.
+
+Good luck.
+
+## Authors
+
+🔥Ilia Rodikov - freeze.eli@gmail.com🔥
