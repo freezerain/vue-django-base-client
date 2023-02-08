@@ -1,63 +1,84 @@
 <template>
   <tr>
-  <td>{{ myEvent.title }}</td>
-  <td>{{ myEvent.description }}</td>
-  <td>{{ myEvent.location }}</td>
-  <td>{{ myEvent.date }}</td>
-  <td>{{ myEvent.status }}</td>
-  <td>{{ myEvent.owner }}</td>
-  <td>
-    <ul class="subscriber_list">
-      <li v-for="subscriber in myEvent.subscribers">
-        <span>{{ subscriber }}</span>
-      </li>
-    </ul>
-  </td>
-  <td>
-    <button type="button" class="btn edit" v-if="isAllowedToEdit" @click='edit'>Edit</button>
-    <button type="button" class="btn edit" v-if="isAllowedToSubscribe && !isSubscribed" @click='subscribe'>Subscribe</button>
-    <button type="button" class="btn edit" v-if="isAllowedToSubscribe && isSubscribed" @click='unsubscribe'>Unsubscribe</button>
-  </td>
+    <td>{{ myEvent.title }}</td>
+    <td>{{ myEvent.description }}</td>
+    <td>{{ myEvent.location }}</td>
+    <td>{{ myEvent.date }}</td>
+    <td>{{ myEvent.status }}</td>
+    <td>{{ myEvent.owner }}</td>
+    <td>
+      <ul class="subscriber_list">
+        <li v-for="subscriber in myEvent.subscribers">
+          <span>{{ subscriber }}</span>
+        </li>
+      </ul>
+    </td>
+    <td class="actions">
+      <button type="button" class="btn edit" v-if="isOwnerOrAdmin" @click='edit'>Edit</button>
+      <button type="button" class="btn subscribe" v-if="isAuthorized && !isSubscribed" @click='subscribe'>
+        Subscribe
+      </button>
+      <button type="button" class="btn unsubscribe" v-if="isAuthorized && isSubscribed" @click='unsubscribe'>
+        Unsubscribe
+      </button>
+    </td>
   </tr>
-  <EditDialog v-if="isEditMode" :myEvent="myEvent" @cancelEditDialog="()=>isEditMode=false"></EditDialog>
+  <EditDialog v-if="isEditMode" :myEvent="myEvent" @cancelEditDialog="cancelEdit"
+              @requestRefresh="fetchEventData"></EditDialog>
 </template>
 
 <script>
 import EditDialog from "./EditDialog.vue";
+import {store} from "../globalStore";
+
 
 export default {
-  props: ['myEvent', 'user'],
+  props: ['myEvent'],
   data() {
     return {
-      isEditMode:false
+      store,
+      isEditMode: false
     }
   },
-  components:{
+  components: {
     EditDialog,
   },
   methods: {
     subscribe() {
-      this.myEvent.subscribers.push(this.user.username)
+      this.subscriptionRequest(true)
     },
     unsubscribe() {
-      this.myEvent.subscribers = this.myEvent.subscribers.filter(a=> a != this.user.username)
+      this.subscriptionRequest(false)
+    },
+    async subscriptionRequest(isSubscribe) {
+      await this.$http.post(this.myEvent.url + (isSubscribe ? "subscribe/" : "unsubscribe/"), {},
+          {headers: {Authorization: `Token ${localStorage.getItem('token')}`}})
+          .then(r => this.fetchEventData())
+          .catch(e => console.log(e))
     },
     edit() {
       this.isEditMode = true
     },
-  },
-  created() {
-    //this.fetchData()
-  },
-  computed:{
-    isAllowedToEdit(){
-      return this.user.isAdmin ||  this.user.username == this.myEvent.owner
+    cancelEdit() {
+      this.isEditMode = false;
     },
-    isSubscribed(){
-      return this.myEvent.subscribers.includes(this.user.username)
+    async fetchEventData() {
+      await this.$http.get(this.myEvent.url, this.store.isAuth?{
+            headers: {Authorization: `Token ${localStorage.getItem('token')}`}
+          } :{})
+          .then(r => Object.assign(this.myEvent, r.data)) //Trick here, ask developer
+          .catch(e => console.log(e))
+    }
+  },
+  computed: {
+    isOwnerOrAdmin() {
+      return store.isSuperuser || localStorage.getItem('username') == this.myEvent.owner
     },
-    isAllowedToSubscribe(){
-      return this.user
+    isSubscribed() {
+      return this.myEvent.subscribers.includes(localStorage.getItem('username'))
+    },
+    isAuthorized() {
+      return localStorage.getItem('token')
     }
   }
 }
@@ -65,7 +86,39 @@ export default {
 </script>
 
 <style scoped>
-tr:nth-child(even) {background-color: #7e7e7e;}
+tr:nth-child(even) {
+  background-color: #2f2f2f;
+}
 
+tr td {
+  padding: 5px;
+  color: white;
+}
+
+.actions {
+  text-align: right;
+}
+
+.btn {
+  margin: 5px;
+  border-radius: 5px;
+  min-height: 26px;
+  min-width: 46px;
+}
+
+.edit {
+  background: orangered;
+  color: white;
+}
+
+.subscribe {
+  background: green;
+  color: white;
+}
+
+.unsubscribe {
+  background: darkred;
+  color: #c8c8c8
+}
 </style>
 

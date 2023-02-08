@@ -5,16 +5,18 @@
     <div class="modal">
       <h2 class="title">Register</h2>
       <div class="fields">
-        <div>
-          <label class="field-label">Username
+
+          <label class="field-label">
+            <span>Username</span>
             <input type="text" v-model="username">
           </label>
-        </div>
-        <div>
-          <label class="field-label">Password
+
+
+          <label class="field-label">
+            <span>Password</span>
             <input type="text" v-model="password">
           </label>
-        </div>
+
       </div>
       <div class="buttons">
         <button type="button" class="btn decline" @click="decline">Cancel</button>
@@ -42,7 +44,7 @@ export default {
         username: this.username,
         password: this.password
       }))
-          .then(r => this.$emit('loggedIn', r.data.token, r.data.username))
+          .then(r => this.$emit('loggedIn', r.data.token, r.data.username, r.data.is_superuser))
           .then(() => this.$emit('closeDialog'))
           .catch(e => console.log(e))
     },
@@ -74,28 +76,46 @@ export default {
   height: auto;
   top: 50%;
   left: 50%;
-  background: darkblue;
+  background:  darkorange;
   transform: translate(-50%, -50%);
   z-index: 10;
   border-radius: 5px;
   padding: 10px;
   box-shadow: 2px 2px black;
 }
-.title{
-  text-align:center;
+
+.title {
+  text-align: center;
   color: white;
 }
+
 .fields {
-  display: table;
-}
-
-.buttons {
-  display: inline-block;
-
+  margin: 5px
 }
 
 .field-label {
-  color: #ffffff
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.field-label span {
+  width: 100px;
+  flex: 0 0 100px;
+}
+
+.field-label input {
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+.field-label input {
+  width: 100%;
 }
 
 .btn {
@@ -108,7 +128,8 @@ export default {
 
 .accept {
   background: green;
-  color: #ffffff
+  color: #ffffff;
+  margin-left: auto;
 }
 
 .decline {

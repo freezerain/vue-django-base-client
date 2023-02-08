@@ -1,9 +1,9 @@
 <template>
-  <div class="main-div" :class="{authorize: isAuth}">
-    <h3 class="username">{{ username }}</h3>
-    <button type="button" class="btn register" v-if="!isAuth" @click='showRegisterDialog'>Register</button>
-    <button type="button" class="btn login" v-if="!isAuth" @click='showLoginDialog'>Login</button>
-    <button type="button" class="btn logout" v-if="isAuth" @click="logout">Logout</button>
+  <div class="main-div" :class="{authorize: store.isAuth}">
+    <h3 class="username">{{ store.isAuth? `Welcome, ${username}` : "Please register or login -> "}}</h3>
+    <button type="button" class="btn register" v-if="!store.isAuth" @click='showRegisterDialog'>Register</button>
+    <button type="button" class="btn login" v-if="!store.isAuth" @click='showLoginDialog'>Login</button>
+    <button type="button" class="btn logout" v-if="store.isAuth" @click="logout">Logout</button>
   </div>
   <LoginForm v-if="isLoginDialog" @closeDialog="closeDialogs" @loggedIn="loginIntent"></LoginForm>
   <RegisterForm v-if="isRegisterDialog" @closeDialog="closeDialogs" @loggedIn="loginIntent"></RegisterForm>
@@ -13,6 +13,7 @@
 <script>
 import LoginForm from "./LoginForm.vue";
 import RegisterForm from "./RegisterForm.vue";
+import { store } from '../globalStore.js';
 
 export default {
   name: "AuthComponent",
@@ -22,7 +23,7 @@ export default {
   },
   data() {
     return {
-      isAuth: true,
+      store,
       username: "",
       isLoginDialog: false,
       isRegisterDialog: false,
@@ -33,10 +34,11 @@ export default {
       this.isLoginDialog = false;
       this.isRegisterDialog = false;
     },
-    loginIntent(token, username) {
+    loginIntent(token, username, isSuperuser) {
       localStorage.setItem('token', token);
       localStorage.setItem('username', username);
-      this.loadLoginData()
+      localStorage.setItem('is_superuser', isSuperuser)
+      this.loadLoginDataIntoStore()
     },
     showLoginDialog() {
       this.isLoginDialog = true
@@ -46,20 +48,24 @@ export default {
     },
     logout() {
       localStorage.setItem('token', '');
-      this.loadLoginData()
+      localStorage.setItem('username', '');
+      localStorage.setItem('is_superuser', '');
+      this.loadLoginDataIntoStore()
     },
-    loadLoginData(){
+    loadLoginDataIntoStore(){
       if (localStorage.getItem('token')){
-        this.isAuth = true;
+        this.store.isAuth = true;
+        this.store.isSuperuser = localStorage.getItem('is_superuser') == 'true'
         this.username = localStorage.getItem('username')
       }else{
-        this.username = 'Please login -> '
-        this.isAuth = false
+        this.username = ''
+        this.store.isSuperuser = false
+        this.store.isAuth = false
       }
     },
   },
   created() {
-    this.loadLoginData();
+    this.loadLoginDataIntoStore();
   },
 }
 </script>
@@ -82,8 +88,8 @@ export default {
   min-width: 72px;
 }
 .register{
-  background: green;
-  color: #ffffff
+  background: bisque;
+  color: #000000;
 }
 .login {
   background: green;
