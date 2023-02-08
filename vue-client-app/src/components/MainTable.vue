@@ -1,23 +1,26 @@
 <template>
   <table>
     <thead>
-    <td :class="{ascsort:currentSortingColumn=='title', descsort:!isAscending}" @click="sort('title')">Title</td>
-    <td :class="{ascsort:currentSortingColumn=='description', descsort:!isAscending}" @click="sort('description')">
-      Descriptionm
-    </td>
-    <td :class="{ascsort:currentSortingColumn=='location', descsort:!isAscending}" @click="sort('location')">Location
-    </td>
-    <td :class="{ascsort:currentSortingColumn=='date', descsort:!isAscending}" @click="sort('date')">Date</td>
-    <td :class="{ascsort:currentSortingColumn=='status', descsort:!isAscending}" @click="sort('status')">Status</td>
-    <td :class="{ascsort:currentSortingColumn=='owner', descsort:!isAscending}" @click="sort('owner')">Owner</td>
+    <td :class="{ascsort:currentSortingColumn=='title', descsort:!isAscending}"
+        @click="sort('title')">Title</td>
+    <td :class="{ascsort:currentSortingColumn=='description', descsort:!isAscending}"
+        @click="sort('description')">Description</td>
+    <td :class="{ascsort:currentSortingColumn=='location', descsort:!isAscending}"
+        @click="sort('location')">Location</td>
+    <td :class="{ascsort:currentSortingColumn=='date', descsort:!isAscending}"
+        @click="sort('date')">Date</td>
+    <td :class="{ascsort:currentSortingColumn=='status', descsort:!isAscending}"
+        @click="sort('status')">Status</td>
+    <td :class="{ascsort:currentSortingColumn=='owner', descsort:!isAscending}"
+        @click="sort('owner')">Owner</td>
     <td>Subs</td>
     <td class="action-column">Actions</td>
     </thead>
     <tbody>
     <MyEvent v-for="event in filterTable" :key="event.url" :myEvent="event"/>
     </tbody>
-
   </table>
+
   <div class="btn_div">
     <button type="button" class="btn" v-if="store.isAuth" @click='showNewEvent'>
       + Add new event
@@ -51,6 +54,10 @@ export default {
   },
   methods: {
     sort(colName) { //TODO BUG !!! not strings cannot be sorted
+      /* onClick will set colName to column we want to sort by
+      *  then basic sorting will be executed
+      *  after witch result will be reversed if we are sorting in descending order
+      * */
       if (this.currentSortingColumn == colName) {
         this.isAscending = !this.isAscending
       } else {
@@ -61,7 +68,7 @@ export default {
         const aLower = a[colName].toString().toLowerCase();
         const bLower = b[colName].toString().toLowerCase();
         const sorted = aLower > bLower ? 1 : aLower < bLower ? -1 : 0;
-        return this.isAscending ? sorted : (sorted * -1);
+        return this.isAscending ? sorted : (sorted * -1); // reverse result if descending sort
       });
     },
     async fetchData() {
@@ -81,25 +88,26 @@ export default {
       this.isShowNewEventDialog = false
     },
     async fetchNewEvent(eventUrl) {
-      console.log("fetching")
-      console.log(eventUrl)
       const response = await this.$http.get(eventUrl, this.store.isAuth ? {
         headers: {Authorization: `Token ${localStorage.getItem('token')}`}
       } : {})
           .then(r => this.data.push(r.data))
-          .then(()=> this.store.filterQuery='')//Triggering rerendering because it is what it is
+          .then(() => this.store.filterQuery = '')//Triggering rerendering because it is what it is
           .catch(e => console.log(e))
       console.log(response)
-
     }
   },
   computed: {
     filterTable() {
+      /* Filtering algho looking for string in deserialized Object.toString()
+      *   very naive and will not work like you want
+      * */
       return this.data.filter((a) => JSON.stringify(a).toLowerCase().includes(this.store.filterQuery))
     },
   },
-  created() {//TODO Start fetching on start fool
+  created() {
     this.fetchData()
+    /*This bullshit is here to provide event handler on custom reactive variable update*/
     this.$watch(
         () => store.isAuth,
         () => {
@@ -107,7 +115,6 @@ export default {
         },
         {deep: true},
     )
-
   }
 }
 </script>

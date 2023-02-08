@@ -12,10 +12,11 @@
 <script>
 import AuthComponent from "./AuthComponent.vue";
 import {store} from '../globalStore.js';
+
 export default {
   name: "Header",
-  data(){
-    return{
+  data() {
+    return {
       store,
     }
   },
@@ -35,24 +36,27 @@ header {
   padding: 5px;
   margin: 0 0 5px;
 }
+
 .title_text {
   text-shadow: 1px 1px #000000;
   color: #ffffff
 }
+
 .cat_logo {
   display: flex;
   margin-right: auto;
   filter: contrast(200%) drop-shadow(1px 1px #000000);
   align-items: center;
-
 }
-.search-box{
-  margin-right:auto;
-  padding:5px;
+
+.search-box {
+  margin-right: auto;
+  padding: 5px;
   box-shadow: inset 0px 0px 1px 1px black
 }
+
 .cat_logo img {
-  height:50px;
+  height: 50px;
   object-fit: fill;
 }
 

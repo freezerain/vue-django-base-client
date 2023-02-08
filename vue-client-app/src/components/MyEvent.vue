@@ -14,23 +14,26 @@
       </ul>
     </td>
     <td class="actions">
-      <button type="button" class="btn edit" v-if="isOwnerOrAdmin" @click='edit'>Edit</button>
-      <button type="button" class="btn subscribe" v-if="isAuthorized && !isSubscribed" @click='subscribe'>
+      <button type="button" class="btn edit"
+              v-if="isOwnerOrAdmin" @click='edit'>Edit</button>
+      <button type="button" class="btn subscribe"
+              v-if="isAuthorized && !isSubscribed" @click='subscribe'>
         Subscribe
       </button>
-      <button type="button" class="btn unsubscribe" v-if="isAuthorized && isSubscribed" @click='unsubscribe'>
+      <button type="button" class="btn unsubscribe"
+              v-if="isAuthorized && isSubscribed" @click='unsubscribe'>
         Unsubscribe
       </button>
     </td>
   </tr>
-  <EditDialog v-if="isEditMode" :myEvent="myEvent" @cancelEditDialog="cancelEdit"
-              @requestRefresh="fetchEventData"></EditDialog>
+  <EditDialog v-if="isEditMode" :myEvent="myEvent"
+              @cancelEditDialog="cancelEdit"
+              @requestRefresh="fetchEventData"/>
 </template>
 
 <script>
 import EditDialog from "./EditDialog.vue";
 import {store} from "../globalStore";
-
 
 export default {
   props: ['myEvent'],
@@ -63,10 +66,10 @@ export default {
       this.isEditMode = false;
     },
     async fetchEventData() {
-      await this.$http.get(this.myEvent.url, this.store.isAuth?{
-            headers: {Authorization: `Token ${localStorage.getItem('token')}`}
-          } :{})
-          .then(r => Object.assign(this.myEvent, r.data)) //Trick here, ask developer
+      await this.$http.get(this.myEvent.url, this.store.isAuth ? {
+        headers: {Authorization: `Token ${localStorage.getItem('token')}`}
+      } : {})
+          .then(r => Object.assign(this.myEvent, r.data)) //Trick here, ask me why
           .catch(e => console.log(e))
     }
   },
@@ -82,7 +85,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>

@@ -1,21 +1,17 @@
 <template>
   <div class="root-div">
-    <div class="overlay" @click="decline">
-    </div>
+    <div class="overlay" @click="decline"></div>
     <div class="modal">
       <h2 class="title">Login</h2>
       <div class="fields">
-
-          <label class="field-label">
-            <span>Username</span>
-            <input type="text" v-model="username">
-          </label>
-
-          <label class="field-label">
-            <span>Password</span>
-            <input type="text" v-model="password">
-          </label>
-
+        <label class="field-label">
+          <span>Username</span>
+          <input type="text" v-model="username">
+        </label>
+        <label class="field-label">
+          <span>Password</span>
+          <input type="text" v-model="password">
+        </label>
       </div>
       <div class="buttons">
         <button type="button" class="btn decline" @click="decline">Cancel</button>
@@ -98,16 +94,16 @@ export default {
 .field-label {
   color: #ffffff;
   display: flex;
-  align-items:center;
+  align-items: center;
   width: 100%;
 }
 
-.field-label span{
+.field-label span {
   width: 100px;
   flex: 0 0 100px;
 }
 
-.field-label input{
+.field-label input {
   width: 100%;
 }
 
@@ -116,13 +112,12 @@ export default {
   border-radius: 5px;
   min-height: 36px;
   min-width: 72px;
-
 }
 
 .accept {
   background: green;
   color: #ffffff;
-  margin-left:auto;
+  margin-left: auto;
 }
 
 .decline {

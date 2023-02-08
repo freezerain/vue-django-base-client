@@ -1,22 +1,17 @@
 <template>
   <div class="root-div">
-    <div class="overlay" @click="decline">
-    </div>
+    <div class="overlay" @click="decline"></div>
     <div class="modal">
       <h2 class="title">Register</h2>
       <div class="fields">
-
-          <label class="field-label">
-            <span>Username</span>
-            <input type="text" v-model="username">
-          </label>
-
-
-          <label class="field-label">
-            <span>Password</span>
-            <input type="text" v-model="password">
-          </label>
-
+        <label class="field-label">
+          <span>Username</span>
+          <input type="text" v-model="username">
+        </label>
+        <label class="field-label">
+          <span>Password</span>
+          <input type="text" v-model="password">
+        </label>
       </div>
       <div class="buttons">
         <button type="button" class="btn decline" @click="decline">Cancel</button>
@@ -76,7 +71,7 @@ export default {
   height: auto;
   top: 50%;
   left: 50%;
-  background:  darkorange;
+  background: darkorange;
   transform: translate(-50%, -50%);
   z-index: 10;
   border-radius: 5px;

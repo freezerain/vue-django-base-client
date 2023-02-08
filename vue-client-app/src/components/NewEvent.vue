@@ -1,7 +1,6 @@
 <template>
   <div class="root-div">
-    <div class="overlay" @click="closeDialog">
-    </div>
+    <div class="overlay" @click="closeDialog"></div>
     <div class="modal">
       <h2 class="title">New event</h2>
       <div class="fields">
@@ -17,29 +16,19 @@
           <span>Location</span>
           <input type="text" v-model="localEvent.location">
         </label>
-
-
         <label class="field-label">
           <span>Date</span>
           <input type="datetime-local" v-model="localEvent.date">
         </label>
-
-
         <label class="field-label">
           <span>Status</span>
-
-
           <select v-model="localEvent.status">
             <option v-for="option in options" :key="option">
               {{ option }}
             </option>
           </select>
-
-
         </label>
-
       </div>
-
       <div class="buttons">
         <button type="button" class="btn decline" @click="closeDialog">Cancel</button>
         <button type="button" class="btn accept" @click="saveDialog">Create</button>
@@ -49,14 +38,12 @@
 </template>
 
 <script>
-
-
 export default {
   name: "NewEvent",
   data() {
     return {
       localEvent: {
-        status:'DRAFT'
+        status: 'DRAFT'
       },
       options: ["DRAFT", "PRIVATE", "PUBLIC", "REMOVED", "UNDEFINED"]
     }
@@ -67,17 +54,18 @@ export default {
     },
     async saveDialog() {
       this.localEvent.owner = localStorage.getItem('username')
-      await this.$http.post('http://127.0.0.1:8000/events/', {...this.localEvent}, {
+      await this.$http.post('http://127.0.0.1:8000/events/', {/*nice trick*/...this.localEvent}, {
         headers: {Authorization: `Token ${localStorage.getItem('token')}`}
       })
-          .then(r=> this.$emit('requestFetchNewEvent', r.data.url))
-          .then(()=> this.closeDialog())
-          .catch(e=> console.log(e))
+          .then(r => this.$emit('requestFetchNewEvent', r.data.url))
+          .then(() => this.closeDialog())
+          .catch(e => console.log(e))
     },
   },
   created() {
+    /* Put current time as default value*/
     const dateString = new Date().toISOString()
-    this.localEvent.date = dateString.substring(0, dateString.length-1)
+    this.localEvent.date = dateString.substring(0, dateString.length - 1)
   },
 }
 </script>

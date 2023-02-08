@@ -7,7 +7,6 @@
   </div>
   <LoginForm v-if="isLoginDialog" @closeDialog="closeDialogs" @loggedIn="loginIntent"></LoginForm>
   <RegisterForm v-if="isRegisterDialog" @closeDialog="closeDialogs" @loggedIn="loginIntent"></RegisterForm>
-
 </template>
 
 <script>
@@ -34,17 +33,17 @@ export default {
       this.isLoginDialog = false;
       this.isRegisterDialog = false;
     },
-    loginIntent(token, username, isSuperuser) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('username', username);
-      localStorage.setItem('is_superuser', isSuperuser)
-      this.loadLoginDataIntoStore()
-    },
     showLoginDialog() {
       this.isLoginDialog = true
     },
     showRegisterDialog() {
       this.isRegisterDialog = true
+    },
+    loginIntent(token, username, isSuperuser) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('username', username);
+      localStorage.setItem('is_superuser', isSuperuser)
+      this.loadLoginDataIntoStore()
     },
     logout() {
       localStorage.setItem('token', '');
@@ -53,6 +52,10 @@ export default {
       this.loadLoginDataIntoStore()
     },
     loadLoginDataIntoStore(){
+      /* sync localStorage to global reactive store
+      *  Simulating event main bus pattern
+      *  We want to notify table when user login-in/out for refreshing
+      * */
       if (localStorage.getItem('token')){
         this.store.isAuth = true;
         this.store.isSuperuser = localStorage.getItem('is_superuser') == 'true'
