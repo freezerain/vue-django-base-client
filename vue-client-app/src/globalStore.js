@@ -1,5 +1,5 @@
 import {reactive} from 'vue'
-//Dont do this kids
+//This is a global variable store and antipattern
 export const store = reactive({
     isAuth: false,
     isSuperuser: false,
